@@ -1,0 +1,52 @@
+
+base:
+  random_state: 50
+  log_level: INFO
+
+
+data_load:
+  dataset_id: 89 
+  dataset_procesed: "data/procesed/solarflares.csv"
+
+data_split:
+  test_size: 0.2
+  trainset_path: 'data/train/solarflares.csv'
+  testset_path: 'data/test/solarflares.csv'
+
+featurize:
+  features_path: 'data/feature/solarflares.csv'
+  target_column: 'remainder__flares_value'
+  categorical_features: ['modified Zurich class','largest spot size','spot distribution']
+  cols_to_drop: ['flares']
+  cols_value: ['common flares', 'moderate flares', 'severe flares']
+  cols_to_keep: ['modified Zurich class', 'largest spot size', 'spot distribution',
+       'activity', 'evolution', 'previous 24 hour flare activity',
+       'historically-complex', 'became complex on this pass', 'area',
+       'area of largest spot']
+
+train:
+
+  cv: 3
+  estimator_name: LogisticRegresion
+  estimators:
+    logreg: # sklearn.linear_model.LogisticRegression
+      param_grid: # params of GridSearchCV constructor
+        C: [0.005]
+        max_iter: [100]
+        solver: ['lbfgs']
+        multi_class: ['multinomial']
+    svm: # sklearn.svm.SVC
+      param_grid:
+        C: [0.1, 1.0]
+        kernel: ['rbf', 'linear']
+        gamma: ['scale']
+        degree: [3, 5]
+    rdm_forest:
+      param_grid:
+  model_path: src/models/model.joblib
+
+
+evaluate:
+  reports_dir: reports
+  metrics_file: 'metrics.json'
+  confusion_matrix_image: 'confusion_matrix.png'
