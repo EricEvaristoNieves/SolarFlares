@@ -13,8 +13,14 @@ from src.utils.logs import get_logger
 
 
 def renaming_fun(x):
-    if "remainder__" in x:
-        return x.strip('remainder__')
+    #print(x)
+    if "remainder__" or "cat__" in x:        
+        x = x.replace("remainder__", "")
+        x = x.replace("cat__", "")
+        x = x.replace("-", "_")
+        x = x.replace(" ", "_")
+        return x
+
     return x
 
 def featurize(config_path: Text) -> None:
@@ -50,13 +56,13 @@ def featurize(config_path: Text) -> None:
     X_processed = preprocessor.fit_transform(X)
     # Convert processed X array into dataframe
     X_processed_df = pd.DataFrame(X_processed, columns=preprocessor.get_feature_names_out())
-
+    #print(X_processed_df)
     # Clean column names
-    #X_processed_df.columns = [renaming_fun(col) for col in X_processed_df.columns]
+    X_processed_df.columns = [renaming_fun(col) for col in X_processed_df.columns]
 
     logger.info('Save features')
     features_path = config['featurize']['features_path']
-    X_processed_df.to_csv(features_path, index=False)
+    X_processed_df.to_csv(features_path, index=False) 
 
 if __name__ == '__main__':
 

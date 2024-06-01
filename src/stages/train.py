@@ -34,7 +34,7 @@ def train_model(config_path: Text) -> None:
     target_column = config['featurize']['target_column']
     X = train_df.drop([target_column], axis=1)
     y = train_df[target_column]
-
+    print(X.columns)    
     logger.info('Train model')
     # Create model
     model = LogisticRegression(random_state=50, max_iter=10000)
